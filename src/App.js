@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from './api';
 import { Link } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function App() {
 
@@ -17,23 +24,29 @@ function App() {
     }, [])
 
     return (
-        <>
-            {loading ? <span>Carregando dados...</span> : <div/> }
-            <table>
+        <div  style={{marginTop: '80px'}}>
+            {loading ? <CircularProgress /> : <div/> }
+            <Table>
+                <TableBody>
                 {filme.map(item => (
-                    <tr key={item.id}>
-                        <td>{item.id}</td>
-                        <td>{item.nome}</td>
-                        <td>{item.diretor}</td>
-                        <td>{item.ano}</td>
-                        <td>
+                    <TableRow key={item.id}>
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell>{item.nome}</TableCell>
+                        <TableCell>{item.diretor}</TableCell>
+                        <TableCell>{item.ano}</TableCell>
+                        <TableCell>
                             <input type="checkbox" checked={item.assistido}/>
-                        </td>
-                    </tr>
+                        </TableCell>
+                    </TableRow>
                 ))}
-            </table>
-            <Link to="/create">Adicionar</Link>
-        </>
+                </TableBody>
+            </Table>
+            <br/>
+            {/* <Link to="/create">Adicionar</Link> */}
+            <Button variant="contained" color="primary">
+                Primary
+            </Button>
+        </div>
     );
 
 }
