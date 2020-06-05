@@ -1,34 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import api from './api';
-import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+import Header from './header';
+import { 
+    Container, 
+    Table, 
+    TableRow, 
+    TableCell,  
+    Dialog, 
+    Button, 
+    DialogTitle, 
+    DialogContent,
+    DialogContentText, 
+    TextField,
+    DialogActions } from '@material-ui/core';
+import './style.css';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 function App() {
 
-    const [filme, setFilme] = useState([]);
-    const [loading, setloading] = useState(true);
+    const [ lista, setLista ] = useState([]);
+    const [ open, setOpen ] = useState(false);
+    const [ nome, setNome] = useState('');
+    const [ diretor, setDiretor] = useState('');
+    const [ ano, setAno] = useState('');
 
-    //executa para obter informações externas
-    useEffect(() => {
+    function loadData() {
         api.get('/filme').then((response) => {
             const itens = response.data;
-            setFilme(itens);
-            setloading(false);
+            setLista(itens);
         })
-    }, [])
+    }
+
+    useEffect(() => loadData(), []);
+
+
+    function openModal() {
+        setOpen(true);
+    } 
+
+    function closeModal() {
+        setOpen(false);
+    }
+
+
+    function addFilme() { 
+        const name = nome;
+        const director = diretor;
+        const year = ano;
+        api.post('/filme', { nome: name, diretor: director, ano: year }).then((response) => {
+        setNome('');
+        setDiretor('');
+        setAno('');
+        setOpen(false);
+        loadData()
+        })
+     }
 
     return (
-        <div  style={{marginTop: '80px'}}>
-            {loading ? <CircularProgress /> : <div/> }
+        <>
+        <Header />
+        <Container maxWidth="lg" className="container">
             <Table>
-                <TableBody>
-                {filme.map(item => (
+                {lista.map(item => (
                     <TableRow key={item.id}>
                         <TableCell>{item.id}</TableCell>
                         <TableCell>{item.nome}</TableCell>
@@ -39,14 +72,60 @@ function App() {
                         </TableCell>
                     </TableRow>
                 ))}
-                </TableBody>
             </Table>
-            <br/>
-            {/* <Link to="/create">Adicionar</Link> */}
-            <Button variant="contained" color="primary">
-                Primary
+            <Button 
+                onClick={openModal}
+                variant="contained" 
+                color="primary" 
+                style={{marginTop: '20px'}}>
+                Adicionar
             </Button>
-        </div>
+            </Container>
+            <Dialog open={open} onClose={closeModal} fullWidth={true} maxWidth="sm">
+                <DialogTitle id="form-dialog-title">Novo Filme</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Digite o filme que pretende adicionar.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="nome"
+                        label="Filme"
+                        type="text"
+                        fullWidth
+                        value={nome}
+                        onChange={e => setNome(e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="diretor"
+                        label="Diretor"
+                        type="text"
+                        fullWidth
+                        value={diretor}
+                        onChange={e => setDiretor(e.target.value)}
+                    />
+                    <TextField
+                        margin="dense"
+                        id="ano"
+                        label="Ano"
+                        type="number"
+                        fullWidth
+                        value={ano}
+                        onChange={e => setAno(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeModal} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={addFilme} color="primary">
+                        Salvar
+                    </Button>
+                 </DialogActions>
+            </Dialog>
+        </>
     );
 
 }
