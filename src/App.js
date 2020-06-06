@@ -5,6 +5,8 @@ import {
     Container, 
     Table, 
     TableRow, 
+    TableHead,
+    TableBody,
     TableCell,  
     Dialog, 
     Button, 
@@ -70,20 +72,32 @@ function App() {
         <Header />
         <Container maxWidth="lg" className="container">
             <Table>
-                {lista.map(item => (
-                    <TableRow key={item.id}>
-                        <TableCell>{item.id}</TableCell>
-                        <TableCell>{item.nome}</TableCell>
-                        <TableCell>{item.diretor}</TableCell>
-                        <TableCell>{item.ano}</TableCell>
-                        <TableCell>
-                            <input type="checkbox" checked={item.assistido} onChange={() => markAsAssistido(item.id)}/>
-                        </TableCell>
-                        <TableCell>
-                            <Button variant="outlined" size="small" color="secondary" onClick={() => deleteFilme(item.id)} >Apagar</Button>
-                        </TableCell>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Nome do Filme</TableCell>
+                        <TableCell>Diretor</TableCell>
+                        <TableCell>Ano de lançamento</TableCell>
+                        <TableCell>Assistido?</TableCell>
+                        <TableCell>Apagar</TableCell>
                     </TableRow>
-                ))}
+                </TableHead>
+                <TableBody>
+                    {lista.map(item => (
+                        <TableRow key={item.id}>
+                            <TableCell>{item.id}</TableCell>
+                            <TableCell>{item.nome}</TableCell>
+                            <TableCell>{item.diretor}</TableCell>
+                            <TableCell>{item.ano}</TableCell>
+                            <TableCell>
+                                <input type="checkbox" checked={item.assistido} onChange={() => markAsAssistido(item.id)}/>
+                            </TableCell>
+                            <TableCell>
+                                <Button variant="outlined" size="small" color="secondary" onClick={() => deleteFilme(item.id)} >Apagar</Button>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
             </Table>
             <Button 
                 onClick={openModal}
