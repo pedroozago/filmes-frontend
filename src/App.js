@@ -33,16 +33,11 @@ function App() {
 
     useEffect(() => loadData(), []);
 
+    const openModal = () => setOpen(true);
 
-    function openModal() {
-        setOpen(true);
-    } 
+    const closeModal = () => setOpen(false);
 
-    function closeModal() {
-        setOpen(false);
-    }
-
-
+    //Função para adicionar um novo filme
     function addFilme() { 
         const name = nome;
         const director = diretor;
@@ -54,6 +49,20 @@ function App() {
         setOpen(false);
         loadData()
         })
+     }
+
+    //Função para marcar o filme como 'Assistido'
+     function markAsAssistido(id) {
+         api.patch(`/filme/${id}/assistido`).then((response) => {
+             loadData()
+         })
+     }
+
+    //Função para excluir um filme da lista.
+     function deleteFilme(id) {
+         api.delete(`/filme/${id}`).then((response) => {
+            loadData()
+         })
      }
 
     return (
@@ -68,7 +77,10 @@ function App() {
                         <TableCell>{item.diretor}</TableCell>
                         <TableCell>{item.ano}</TableCell>
                         <TableCell>
-                            <input type="checkbox" checked={item.assistido}/>
+                            <input type="checkbox" checked={item.assistido} onChange={() => markAsAssistido(item.id)}/>
+                        </TableCell>
+                        <TableCell>
+                            <Button variant="outlined" size="small" color="secondary" onClick={() => deleteFilme(item.id)} >Apagar</Button>
                         </TableCell>
                     </TableRow>
                 ))}
