@@ -53,12 +53,19 @@ function App() {
         })
      }
 
-    //Função para marcar o filme como 'Assistido'
-     function markAsAssistido(id) {
-         api.patch(`/filme/${id}/assistido`).then((response) => {
-             loadData()
-         })
-     }
+     //Função para marcar um filme como 'Não assistido'
+    function markAsAssistido(id, assistido) {
+        if(assistido === true){
+            api.patch(`/filme/${id}/naoassistido`).then((response) => {
+                loadData()
+            });
+        } else {
+                api.patch(`/filme/${id}/assistido`).then((response) => {
+                loadData()
+            });
+        }
+    }
+
 
     //Função para excluir um filme da lista.
      function deleteFilme(id) {
@@ -66,6 +73,7 @@ function App() {
             loadData()
          })
      }
+
 
     return (
         <>
@@ -90,7 +98,9 @@ function App() {
                             <TableCell>{item.diretor}</TableCell>
                             <TableCell>{item.ano}</TableCell>
                             <TableCell>
-                                <input type="checkbox" checked={item.assistido} onChange={() => markAsAssistido(item.id)}/>
+                                <input type="checkbox" 
+                                onChange={() => markAsAssistido(item.id, item.assistido)}                   
+                                checked={item.assistido === true ? true : false}/>
                             </TableCell>
                             <TableCell>
                                 <Button variant="outlined" size="small" color="secondary" onClick={() => deleteFilme(item.id)} >Apagar</Button>
